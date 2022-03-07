@@ -1,7 +1,15 @@
+const User = require('../model/user.model')
+
 class UserService {
   async createUser(user_name, password) {
-    // Todo: 写入数据库
-    return '写入数据库成功'
+    console.log('user_name', user_name);
+    console.log('password', password);
+    const res = await User.create({
+      user_name,
+      password,
+    })
+
+    return res.dataValues
   }
 }
 
