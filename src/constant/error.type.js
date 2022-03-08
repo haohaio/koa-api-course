@@ -37,8 +37,13 @@ module.exports = {
     result: ''
   },
   invalidTokenError: {
-    code: '10101',
+    code: '10102',
     message: 'token 无效',
+    result: ''
+  },
+  hasNotAdminPermissionError: {
+    code: '10103',
+    message: '没有管理员权限',
     result: ''
   }
 }
