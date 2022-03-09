@@ -78,8 +78,18 @@ module.exports = {
     result: '',
   },
   invalidRestoreGoodsIdError: {
-    code: '10206',
+    code: '10207',
     message: '待上架的商品不存在',
+    result: '',
+  },
+  cartFormatError: {
+    code: '10301',
+    message: '购物车参数格式错误',
+    result: '',
+  },
+  invalidGoodsError: {
+    code: '10302',
+    message: '无效商品',
     result: '',
   },
 }
