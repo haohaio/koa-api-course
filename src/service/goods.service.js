@@ -26,6 +26,26 @@ class GoodsService {
     console.log('res', res)
     return res > 0 ? true : false
   }
+
+  async findGoods(pageNum, pageSize) {
+    // select count(*) from hh_goods where deletedAt is null;
+    // const count = await Goods.count()
+
+    const offset = (pageNum - 1) * pageSize
+    // const rows = await Goods.findAll({ offset, limit: +pageSize })
+
+    const { count, rows } = await Goods.findAndCountAll({
+      offset,
+      limit: +pageSize,
+    })
+
+    return {
+      pageNum,
+      pageSize,
+      total: count,
+      list: rows,
+    }
+  }
 }
 
 module.exports = new GoodsService()

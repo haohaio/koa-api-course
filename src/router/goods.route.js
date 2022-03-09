@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const { upload, create, update, remove, restore } = require('../controller/goods.controller')
+const { upload, create, update, remove, restore, findAll } = require('../controller/goods.controller')
 const { auth, hasAdminPermission } = require('../middleware/auth.middleware')
 const { validator } = require('../middleware/goods.middleware')
 
@@ -22,5 +22,7 @@ router.post('/:id/off', auth, hasAdminPermission, remove)
 
 // 恢复软删除
 router.post('/:id/on', auth, hasAdminPermission, restore)
+
+router.get('/', auth, findAll)
 
 module.exports = router
