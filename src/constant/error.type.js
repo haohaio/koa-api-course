@@ -66,5 +66,20 @@ module.exports = {
     code: '10204',
     message: '发布商品失败',
     result: '',
-  }
+  },
+  invalidGoodsIdError: {
+    code: '10205',
+    message: '待修改的商品不存在',
+    result: '',
+  },
+  invalidDeleteGoodsIdError: {
+    code: '10206',
+    message: '待下架的商品不存在',
+    result: '',
+  },
+  invalidRestoreGoodsIdError: {
+    code: '10206',
+    message: '待上架的商品不存在',
+    result: '',
+  },
 }

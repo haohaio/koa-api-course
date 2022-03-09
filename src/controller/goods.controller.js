@@ -1,6 +1,19 @@
 const path = require('path')
-const { fillUploadError, unSupportedFileTypeError, createGoodsError } = require('../constant/error.type')
-const {createGoods} = require('../service/goods.service')
+const {
+  fillUploadError,
+  unSupportedFileTypeError,
+  createGoodsError,
+  invalidGoodsIdError,
+  invalidDeleteGoodsIdError,
+  invalidRestoreGoodsIdError
+} = require('../constant/error.type')
+const {
+  createGoods,
+  updateGoods,
+  deleteGoods,
+  restoreGoods
+} = require('../service/goods.service')
+
 class GoodsController {
   async upload(ctx, next) {
     const { file } = ctx.request.files
@@ -25,15 +38,72 @@ class GoodsController {
   }
   async create(ctx, next) {
     try {
-      const res = await createGoods(ctx.request.body)
+      const { createdAt, updatedAt, ...res } = await createGoods(
+        ctx.request.body
+      )
+      console.log('res', res)
       ctx.body = {
         code: 0,
         message: '发布商品成功',
         result: res,
       }
     } catch (error) {
-      console.error('发布商品失败', error);
+      console.error('发布商品失败', error)
       return ctx.app.emit('error', createGoodsError, ctx)
+    }
+  }
+  async update(ctx, next) {
+    try {
+      const res = await updateGoods(ctx.params.id, ctx.request.body)
+      if (res) {
+        ctx.body = {
+          code: 0,
+          message: '更新商品成功',
+          result: '',
+        }
+      } else {
+        ctx.app.emit('error', invalidGoodsIdError, ctx)
+      }
+    } catch (error) {
+      console.error('更新商品失败')
+    }
+  }
+
+  async remove(ctx, next) {
+    try {
+      const res = await deleteGoods(ctx.params.id)
+
+      if (res) {
+        ctx.body = {
+          code: 0,
+          message: '下架商品成功',
+          result: '',
+        }
+      } else {
+        console.error('待下架的商品不存在')
+        ctx.app.emit('error', invalidDeleteGoodsIdError, ctx)
+      }
+    } catch (error) {
+      console.error('下架商品失败')
+    }
+  }
+
+  async restore(ctx, next) {
+    try {
+      const res = await restoreGoods(ctx.params.id)
+
+      if (res) {
+        ctx.body = {
+          code: 0,
+          message: '上架商品成功',
+          result: '',
+        }
+      } else {
+        console.error('待上架的商品不存在')
+        ctx.app.emit('error', invalidRestoreGoodsIdError, ctx)
+      }
+    } catch (error) {
+      console.error('上架商品失败')
     }
   }
 }
