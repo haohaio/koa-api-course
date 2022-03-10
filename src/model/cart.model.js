@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../db/seq')
+const Goods = require('./goods.model')
 
 // 创建模型
 const Cart = sequelize.define(
@@ -33,6 +34,10 @@ const Cart = sequelize.define(
   { paranoid: true } // 会多一个 deletedAt 字段
 )
 
+Cart.belongsTo(Goods, {
+  foreignKey: 'goodsId',
+  as: 'goodsInfo'
+})
 // Cart.sync({ force: true })
 
 module.exports = Cart

@@ -4,7 +4,7 @@ const Goods = require('../model/goods.model')
 
 class CartService {
   async createOrUpdateCart(userId, goodsId) {
-    const goods = await Goods.findOne({ where: { id: goodsId }})
+    const goods = await Goods.findOne({ where: { id: goodsId } })
     if (!goods) {
       return false
     }
@@ -20,6 +20,28 @@ class CartService {
     }
 
     return res.dataValues
+  }
+
+  async findCarts(pageNum, pageSize) {
+    const offset = (pageNum - 1) * pageSize
+
+    const { count, rows } = await Cart.findAndCountAll({
+      attributes: ['id', 'number', 'selected'],
+      offset,
+      limit: +pageSize,
+      include: {
+        model: Goods,
+        as: 'goodsInfo',
+        attributes: ['id', 'goodsName', 'goodsPrice', 'goodsImg'],
+      },
+    })
+
+    return {
+      pageNum,
+      pageSize,
+      total: count,
+      list: rows,
+    }
   }
 }
 

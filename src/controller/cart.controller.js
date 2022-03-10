@@ -1,5 +1,5 @@
-const { createOrUpdateCart } = require('../service/cart.service')
-const {invalidGoodsError} = require('../constant/error.type')
+const { createOrUpdateCart, findCarts } = require('../service/cart.service')
+const { invalidGoodsError } = require('../constant/error.type')
 
 class CartController {
   async add(ctx) {
@@ -19,6 +19,20 @@ class CartController {
       }
     } catch (error) {
       console.error('加入购物车失败', error)
+    }
+  }
+
+  async findAll(ctx) {
+    const { pageNum = 1, pageSize = 10 } = ctx.request.query
+    const res = await findCarts(pageNum, pageSize)
+    if (res) {
+      ctx.body = {
+        code: 0,
+        message: '获取购物车列表成功',
+        result: res,
+      }
+    } else {
+      console.error('获取购物车列表失败', error)
     }
   }
 }
