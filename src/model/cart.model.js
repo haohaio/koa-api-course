@@ -31,7 +31,7 @@ const Cart = sequelize.define(
       comment: '是否选中',
     },
   },
-  { paranoid: true } // 会多一个 deletedAt 字段
+  // { paranoid: true } // 会多一个 deletedAt 字段
 )
 
 Cart.belongsTo(Goods, {

@@ -22,10 +22,11 @@ class CartService {
     return res.dataValues
   }
 
-  async findCarts(pageNum, pageSize) {
+  async findCarts(userId, pageNum, pageSize) {
     const offset = (pageNum - 1) * pageSize
 
     const { count, rows } = await Cart.findAndCountAll({
+      where: { userId },
       attributes: ['id', 'number', 'selected'],
       offset,
       limit: +pageSize,
@@ -42,6 +43,47 @@ class CartService {
       total: count,
       list: rows,
     }
+  }
+
+  async updateCart({ id, number, selected }) {
+    const cart = await Cart.findByPk(id)
+    if (!cart) return false
+    if (number !== undefined) {
+      cart.number = number
+    }
+    if (selected !== undefined) {
+      cart.selected = selected
+    }
+
+    return await cart.save()
+  }
+
+  async removeCarts(ids) {
+    // 返回删除文件的个数
+    const res = await Cart.destroy({
+      where: {
+        id: {
+          [Op.in]: ids,
+        },
+      },
+    })
+
+    return res
+  }
+
+  async selectAllCarts(userId) {
+    const res = await Cart.update({ selected: true }, { where: { userId } })
+    return res
+  }
+
+  async unselectAllCarts(userId) {
+    const res = await Cart.update({ selected: false }, { where: { userId } })
+    return res
+  }
+
+  async getGoodsTotal(userId) {
+    const res = await Cart.sum('number', { where: { userId } })
+    return res
   }
 }
 
