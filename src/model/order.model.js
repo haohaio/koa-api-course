@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../db/seq')
+const Addr = require('./addr.model')
 
 // 创建模型 表名推断： hh_user => hh_users，person => people
 const Order = sequelize.define(
@@ -7,29 +8,34 @@ const Order = sequelize.define(
   {
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false, // allowNull 默认为 true
       comment: '用户ID',
     },
-    consignee: {
-      type: DataTypes.STRING,
+    addressId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      comment: '收件人',
+      comment: '地址ID',
     },
-    phone: {
-      type: DataTypes.CHAR(11),
+    goodsInfo: {
+      type: DataTypes.TEXT,
       allowNull: false,
-      comment: '手机号',
+      comment: '商品信息',
     },
-    address: {
-      type: DataTypes.STRING,
+    total: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
-      comment: '收货地址',
+      comment: '订单总金额',
     },
-    isDefault: {
-      type: DataTypes.BOOLEAN,
+    orderNumber: {
+      type: DataTypes.CHAR(15),
       allowNull: false,
-      defaultValue: false,
-      comment: '是否为默认地址',
+      comment: '订单编号',
+    },
+    status: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0, 
+      comment: '订单状态（0: 未支付， 1： 已支付，2：已发货，3：已签收，4：取消）',
     }
   },
   {
@@ -41,6 +47,11 @@ const Order = sequelize.define(
 // User.sync({ force: true }) - 将创建表,如果表已经存在,则将其首先删除
 // User.sync({ alter: true }) - 这将检查数据库中表的当前状态(它具有哪些列,它们的数据类型等),然后在表中进行必要的更改以使其与模型匹配
 
-Order.sync({ alter: true })
+// Order.sync({ alter: true })
+
+Order.belongsTo(Addr, {
+  foreignKey: 'addressId',
+  as: 'addressInfo'
+})
 
 module.exports = Order
